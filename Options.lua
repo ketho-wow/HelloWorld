@@ -33,13 +33,12 @@ function HelloWorld:CreateCheckbox(savedvar, name, parent, update)
 	end
 	cb:SetChecked(self.db[savedvar]) -- set the initial checked state
 	-- some extra work to update checked state when resetting
-	cb.default = self.db[savedvar]
+	cb.default = self.defaults[savedvar]
 	cb.update = update
 	tinsert(created_widgets, cb)
 	return cb
 end
 
--- wait for the savedvariables before creating the options and setting the state
 function HelloWorld:SetupOptions()
 	-- main panel
 	self.panel_main = CreateFrame("Frame")
