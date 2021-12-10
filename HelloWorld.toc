@@ -1,6 +1,6 @@
 ## Interface: 90105
 ## Version: 1.0.0
-## Title: HelloWorld
+## Title: Hello World
 ## Notes: My first addon
 ## Author: YourName
 ## SavedVariables: HelloWorldDB

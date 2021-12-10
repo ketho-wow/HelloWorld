@@ -38,7 +38,7 @@ end
 -- note we don't pass `self` here because of hooksecurefunc, hence the dot instead of colon
 function HelloWorld.JumpOrAscendStart()
 	if HelloWorld.db.jump then
-		print("You pressed spacebar.")
+		print("Your character jumped.")
 	end
 end
 

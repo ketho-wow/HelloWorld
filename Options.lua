@@ -31,7 +31,7 @@ function HelloWorld:CreateCheckbox(savedvar, name, parent, update)
 			update(value == "1")
 		end
 	end
-	cb:SetChecked(self.db[savedvar]) -- set the initial options state
+	cb:SetChecked(self.db[savedvar]) -- set the initial checked state
 	-- some extra work to update checked state when resetting
 	cb.default = self.db[savedvar]
 	cb.update = update
@@ -59,11 +59,11 @@ function HelloWorld:SetupOptions()
 	end)
 	cb_combat:SetPoint("TOPLEFT", cb_jump, 0, -30)
 
-	local reset_btn = CreateFrame("Button", nil, self.panel_main, "UIPanelButtonTemplate")
-	reset_btn:SetPoint("TOPLEFT", cb_combat, 0, -40)
-	reset_btn:SetText(RESET)
-	reset_btn:SetWidth(100)
-	reset_btn:SetScript("OnClick", self.ResetOptions)
+	local btn_reset = CreateFrame("Button", nil, self.panel_main, "UIPanelButtonTemplate")
+	btn_reset:SetPoint("TOPLEFT", cb_combat, 0, -40)
+	btn_reset:SetText(RESET)
+	btn_reset:SetWidth(100)
+	btn_reset:SetScript("OnClick", self.ResetOptions)
 
 	InterfaceOptions_AddCategory(HelloWorld.panel_main)
 
@@ -81,9 +81,8 @@ function HelloWorld:SetupOptions()
 end
 
 function HelloWorld.ResetOptions()
-	for k, v in pairs(HelloWorld.defaults) do
-		HelloWorld.db[k] = v
-	end
+	HelloWorldDB = CopyTable(HelloWorld.defaults)
+	HelloWorld.db = HelloWorldDB
 	for _, widget in pairs(created_widgets) do
 		if widget:GetObjectType() == "CheckButton" then
 			widget:SetChecked(widget.default)
@@ -114,4 +113,3 @@ function HelloWorld:UpdateEvent(value, event)
 		self:UnregisterEvent(event)
 	end
 end
-
