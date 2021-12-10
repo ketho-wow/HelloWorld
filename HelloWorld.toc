@@ -1,0 +1,9 @@
+## Interface: 90105
+## Version: 1.0.0
+## Title: HelloWorld
+## Notes: My first addon
+## Author: YourName
+## SavedVariables: HelloWorldDB
+
+Core.lua
+Options.lua
