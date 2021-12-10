@@ -4,7 +4,10 @@ HelloWorld.defaults = {
 	mushroom = false,
 	jump = true,
 	combat = true,
+	--someNewOption = "banana",
 }
+
+local created_widgets = {}
 
 local function CreateIcon(icon, width, height, parent)
 	local f = CreateFrame("Frame", nil, parent)
@@ -29,6 +32,10 @@ function HelloWorld:CreateCheckbox(savedvar, name, parent, update)
 		end
 	end
 	cb:SetChecked(self.db[savedvar]) -- set the initial options state
+	-- some extra work to update checked state when resetting
+	cb.default = self.db[savedvar]
+	cb.update = update
+	tinsert(created_widgets, cb)
 	return cb
 end
 
@@ -52,6 +59,12 @@ function HelloWorld:SetupOptions()
 	end)
 	cb_combat:SetPoint("TOPLEFT", cb_jump, 0, -30)
 
+	local reset_btn = CreateFrame("Button", nil, self.panel_main, "UIPanelButtonTemplate")
+	reset_btn:SetPoint("TOPLEFT", cb_combat, 0, -40)
+	reset_btn:SetText(RESET)
+	reset_btn:SetWidth(100)
+	reset_btn:SetScript("OnClick", self.ResetOptions)
+
 	InterfaceOptions_AddCategory(HelloWorld.panel_main)
 
 	-- sub panel
@@ -65,6 +78,20 @@ function HelloWorld:SetupOptions()
 	end
 
 	InterfaceOptions_AddCategory(panel_shroom)
+end
+
+function HelloWorld.ResetOptions()
+	for k, v in pairs(HelloWorld.defaults) do
+		HelloWorld.db[k] = v
+	end
+	for _, widget in pairs(created_widgets) do
+		if widget:GetObjectType() == "CheckButton" then
+			widget:SetChecked(widget.default)
+			if widget.update then
+				widget.update(widget.default)
+			end
+		end
+	end
 end
 
 function HelloWorld.UpdateIcon(value)
@@ -87,3 +114,4 @@ function HelloWorld:UpdateEvent(value, event)
 		self:UnregisterEvent(event)
 	end
 end
+
