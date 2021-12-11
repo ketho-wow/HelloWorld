@@ -1,4 +1,4 @@
-WoW AddOn example with options panel and slash commands.
+WoW AddOn example with options panel.
 - https://wowpedia.fandom.com/wiki/Create_a_WoW_AddOn_in_15_Minutes#Options_Panel
 
 ![](https://github.com/ketho-wow/HelloWorld/raw/master/preview.png)

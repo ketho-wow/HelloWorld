@@ -7,7 +7,7 @@ HelloWorld.defaults = {
 	--someNewOption = "banana",
 }
 
-local created_widgets = {}
+local callbacks = {}
 
 local function CreateIcon(icon, width, height, parent)
 	local f = CreateFrame("Frame", nil, parent)
@@ -21,21 +21,21 @@ end
 -- if `update` is passed, call it when the option is initialized and when clicked
 function HelloWorld:CreateCheckbox(savedvar, name, parent, update)
 	local cb = CreateFrame("CheckButton", nil, parent, "InterfaceOptionsCheckButtonTemplate")
-	cb.Text:SetText(name) -- set the label
-	if update then
-		update(self.db[savedvar])
-	end
+	cb.Text:SetText(name)
 	cb.SetValue = function(_, value)
-		self.db[savedvar] = (value == "1") -- set the savedvar
+		if type(value) == "string" then
+			value = (value == "1")
+		end
+		self.db[savedvar] = value
+		cb:SetChecked(self.db[savedvar])
 		if update then
-			update(value == "1")
+			update(value)
 		end
 	end
-	cb:SetChecked(self.db[savedvar]) -- set the initial checked state
-	-- some extra work to update checked state when resetting
-	cb.default = self.defaults[savedvar]
-	cb.update = update
-	tinsert(created_widgets, cb)
+	cb:SetValue(self.db[savedvar]) -- init
+	self:RegisterCallback("OnReset", function()
+		cb:SetValue(self.defaults[savedvar])
+	end)
 	return cb
 end
 
@@ -62,7 +62,11 @@ function HelloWorld:SetupOptions()
 	btn_reset:SetPoint("TOPLEFT", cb_combat, 0, -40)
 	btn_reset:SetText(RESET)
 	btn_reset:SetWidth(100)
-	btn_reset:SetScript("OnClick", self.ResetOptions)
+	btn_reset:SetScript("OnClick", function()
+		HelloWorldDB = CopyTable(HelloWorld.defaults)
+		self.db = HelloWorldDB
+		self:FireCallbacks("OnReset")
+	end)
 
 	InterfaceOptions_AddCategory(HelloWorld.panel_main)
 
@@ -79,16 +83,15 @@ function HelloWorld:SetupOptions()
 	InterfaceOptions_AddCategory(panel_shroom)
 end
 
-function HelloWorld.ResetOptions()
-	HelloWorldDB = CopyTable(HelloWorld.defaults)
-	HelloWorld.db = HelloWorldDB
-	for _, widget in pairs(created_widgets) do
-		if widget:GetObjectType() == "CheckButton" then
-			widget:SetChecked(widget.default)
-			if widget.update then
-				widget.update(widget.default)
-			end
-		end
+-- crappy callback handler
+function HelloWorld:RegisterCallback(name, func)
+	callbacks[name] = callbacks[name] or {}
+	callbacks[name][func] = true
+end
+
+function HelloWorld:FireCallbacks(name)
+	for func in pairs(callbacks[name]) do
+		func()
 	end
 end
 
