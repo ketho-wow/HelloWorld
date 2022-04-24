@@ -24,7 +24,7 @@ function HelloWorld:ADDON_LOADED(event, addOnName)
 		self:RegisterEvent("PLAYER_ENTERING_WORLD")
 		hooksecurefunc("JumpOrAscendStart", self.JumpOrAscendStart)
 
-		self:SetupOptions()
+		self:InitializeOptions()
 		self:UnregisterEvent(event)
 	end
 end

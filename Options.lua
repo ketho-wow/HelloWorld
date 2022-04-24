@@ -39,7 +39,7 @@ function HelloWorld:CreateCheckbox(savedvar, name, parent, update)
 	return cb
 end
 
-function HelloWorld:SetupOptions()
+function HelloWorld:InitializeOptions()
 	-- main panel
 	self.panel_main = CreateFrame("Frame")
 	self.panel_main.name = "HelloWorld"
