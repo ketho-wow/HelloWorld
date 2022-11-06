@@ -75,7 +75,5 @@ SLASH_HELLOW1 = "/hw"
 SLASH_HELLOW2 = "/helloworld"
 
 SlashCmdList.HELLOW = function(msg, editBox)
-	-- https://github.com/Stanzilla/WoWUIBugs/issues/89
-	InterfaceOptionsFrame_OpenToCategory(HelloWorld.panel_main)
 	InterfaceOptionsFrame_OpenToCategory(HelloWorld.panel_main)
 end

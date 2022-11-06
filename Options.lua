@@ -36,7 +36,7 @@ function HelloWorld:CreateCheckbox(option, label, parent, update)
 	EventRegistry:RegisterCallback("HelloWorld.OnReset", function()
 		Setter(self.defaults[option])
 		-- EventRegistry callbacks require an `owner` in Classic
-	end, WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and cb or nil)
+	end, (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and cb or nil)
 	return cb
 end
 
