@@ -7,8 +7,6 @@ HelloWorld.defaults = {
 	--someNewOption = "banana",
 }
 
-local callbacks = {}
-
 local function CreateIcon(icon, width, height, parent)
 	local f = CreateFrame("Frame", nil, parent)
 	f:SetSize(width, height)
@@ -18,24 +16,27 @@ local function CreateIcon(icon, width, height, parent)
 	return f
 end
 
--- if `update` is passed, call it when the option is initialized and when clicked
-function HelloWorld:CreateCheckbox(savedvar, name, parent, update)
+function HelloWorld:CreateCheckbox(option, label, parent, update)
 	local cb = CreateFrame("CheckButton", nil, parent, "InterfaceOptionsCheckButtonTemplate")
-	cb.Text:SetText(name)
-	cb.SetValue = function(_, value)
-		if type(value) == "string" then
-			value = (value == "1")
-		end
-		self.db[savedvar] = value
-		cb:SetChecked(self.db[savedvar])
-		if update then
+	cb.Text:SetText(label)
+	-- update the checkbox state and related savedvar
+	local Setter = function(value)
+		cb:SetChecked(value)
+		self.db[option] = value
+		if update then -- do any additional work
 			update(value)
 		end
 	end
-	cb:SetValue(self.db[savedvar]) -- init
-	self:RegisterCallback("OnReset", function()
-		cb:SetValue(self.defaults[savedvar])
+	Setter(self.db[option]) -- set the initial state
+	-- there already is an existing OnClick script that plays a sound, hook it
+	cb:HookScript("OnClick", function(_, btn, down)
+		local checked = cb:GetChecked()
+		Setter(checked)
 	end)
+	EventRegistry:RegisterCallback("HelloWorld.OnReset", function()
+		Setter(self.defaults[option])
+		-- EventRegistry callbacks require an `owner` in Classic
+	end, WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and cb or nil)
 	return cb
 end
 
@@ -65,7 +66,7 @@ function HelloWorld:InitializeOptions()
 	btn_reset:SetScript("OnClick", function()
 		HelloWorldDB = CopyTable(HelloWorld.defaults)
 		self.db = HelloWorldDB
-		self:FireCallbacks("OnReset")
+		EventRegistry:TriggerEvent("HelloWorld.OnReset")
 	end)
 
 	InterfaceOptions_AddCategory(HelloWorld.panel_main)
@@ -81,18 +82,6 @@ function HelloWorld:InitializeOptions()
 	end
 
 	InterfaceOptions_AddCategory(panel_shroom)
-end
-
--- crappy callback handler
-function HelloWorld:RegisterCallback(name, func)
-	callbacks[name] = callbacks[name] or {}
-	callbacks[name][func] = true
-end
-
-function HelloWorld:FireCallbacks(name)
-	for func in pairs(callbacks[name]) do
-		func()
-	end
 end
 
 function HelloWorld.UpdateIcon(value)
