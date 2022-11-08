@@ -1,3 +1,5 @@
+local isMainline = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
+
 HelloWorld.defaults = {
 	sessions = 0,
 	hello = false,
@@ -16,27 +18,25 @@ local function CreateIcon(icon, width, height, parent)
 	return f
 end
 
-function HelloWorld:CreateCheckbox(option, label, parent, update)
+function HelloWorld:CreateCheckbox(option, label, parent, updateFunc)
 	local cb = CreateFrame("CheckButton", nil, parent, "InterfaceOptionsCheckButtonTemplate")
 	cb.Text:SetText(label)
-	-- update the checkbox state and related savedvar
-	local Setter = function(value)
-		cb:SetChecked(value)
+	local function UpdateOption(value)
 		self.db[option] = value
-		if update then -- do any additional work
-			update(value)
+		cb:SetChecked(value)
+		if updateFunc then
+			updateFunc(value)
 		end
 	end
-	Setter(self.db[option]) -- set the initial state
+	UpdateOption(self.db[option])
 	-- there already is an existing OnClick script that plays a sound, hook it
 	cb:HookScript("OnClick", function(_, btn, down)
-		local checked = cb:GetChecked()
-		Setter(checked)
+		UpdateOption(cb:GetChecked())
 	end)
 	EventRegistry:RegisterCallback("HelloWorld.OnReset", function()
-		Setter(self.defaults[option])
+		UpdateOption(self.defaults[option])
 		-- EventRegistry callbacks require an `owner` in Classic
-	end, (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and cb or nil)
+	end, not isMainline and cb or nil)
 	return cb
 end
 
@@ -89,11 +89,7 @@ function HelloWorld.UpdateIcon(value)
 		HelloWorld.mushroom = CreateIcon("interface/icons/inv_mushroom_11", 64, 64, UIParent)
 		HelloWorld.mushroom:SetPoint("CENTER")
 	end
-	if value then
-		HelloWorld.mushroom:Show()
-	else
-		HelloWorld.mushroom:Hide()
-	end
+	HelloWorld.mushroom:SetShown(value)
 end
 
 -- a bit more efficient to register/unregister the event when it fires a lot
