@@ -1,5 +1,3 @@
-local isMainline = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
-
 HelloWorld.defaults = {
 	sessions = 0,
 	hello = false,
@@ -35,8 +33,7 @@ function HelloWorld:CreateCheckbox(option, label, parent, updateFunc)
 	end)
 	EventRegistry:RegisterCallback("HelloWorld.OnReset", function()
 		UpdateOption(self.defaults[option])
-		-- EventRegistry callbacks require an `owner` in Classic
-	end, not isMainline and cb or nil)
+	end, cb)
 	return cb
 end
 
