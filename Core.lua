@@ -75,5 +75,5 @@ SLASH_HELLOW1 = "/hw"
 SLASH_HELLOW2 = "/helloworld"
 
 SlashCmdList.HELLOW = function(msg, editBox)
-	InterfaceOptionsFrame_OpenToCategory(HelloWorld.panel_main)
+	Settings.OpenToCategory(HelloWorld.panel_main.name)
 end
