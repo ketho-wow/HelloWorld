@@ -1,5 +1,5 @@
 WoW AddOn example with options panel.
-- https://wowpedia.fandom.com/wiki/Create_a_WoW_AddOn_in_15_Minutes#Options_Panel
+- https://warcraft.wiki.gg/wiki/Create_a_WoW_AddOn_in_15_Minutes
 
 ![](https://github.com/ketho-wow/HelloWorld/raw/master/preview.png)
 
