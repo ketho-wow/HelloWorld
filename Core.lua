@@ -66,7 +66,7 @@ function HelloWorld:CLEU(...)
 
 	if isDamageEvent and sourceGUID == playerGUID then
 		-- get the link of the spell or the MELEE globalstring
-		local action = spellId and GetSpellLink(spellId) or MELEE
+		local action = spellId and C_Spell.GetSpellLink(spellId) or MELEE
 		print(MSG_DAMAGE:format(action, destName, amount))
 	end
 end
