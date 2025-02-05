@@ -1,5 +1,5 @@
 ## Interface: 110007
-## Version: 1.0.3
+## Version: 1.0.4
 ## Title: Hello World
 ## Notes: My first addon
 ## Author: YourName
